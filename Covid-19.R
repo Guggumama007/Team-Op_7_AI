@@ -172,3 +172,73 @@ my_data.cor = cor(my_data)
 my_data.rcorr = rcorr(as.matrix(my_data))
 my_data.rcorr
 corrplot(my_data.cor, method = "number")
+
+# multiple regression analysis
+
+library(tidyverse)
+library(datarium)
+library(githubinstall)
+library(devtools)
+library(usethis)
+library(ISLR)
+library(MASS)
+library(visreg)
+library(rgl)
+library(knitr)
+library(scatterplot3d)
+
+
+
+dhws <- as.vector(italy_total2$diff_hospitalized_with_symptoms)
+dic <- as.vector(italy_total2$diff_intensive_care)
+dth <- as.vector(italy_total2$diff_total_hospitalized)
+dhc <- as.vector(italy_total2$diff_home_confinement)
+dcpc <- as.vector(italy_total2$diff_cumulative_positive_cases)
+ddpc <- as.vector(italy_total2$diff_daily_positive_cases)
+dr <- as.vector(italy_total2$diff_recovered)
+dd <- as.vector(italy_total2$diff_death)
+dcc <- as.vector(italy_total2$diff_cumulative_cases)
+dtt <- as.vector(italy_total2$diff_total_test)
+
+model = glm(dd~dhc+dcpc+dr+dcc+dtt)
+
+summary(model)
+
+sigma(model)/mean(italy_total2$diff_death)
+
+fit1 <- glm(dd~., data = italy_total2)
+
+summary(fit1)
+
+fit2 <- glm(dd~dcpc+dr+dcc, data = italy_total2)
+plot(fit2, pch = 20, cex = 0.7, col = "blue", which = 1)
+# dead end
+
+
+# time series analysis
+
+library(growthmodels)
+################################### ### GOMPERTZ
+# alpha = 9526 beta = 9.1618 k = 0.0028
+nls.gompertz <- minpack.lm::nlsLM(data$cases ˜ alpha*exp(-beta*exp(-k*data$days)), data = data, start = list(alpha = alpha, beta = beta, k = k), control = list(maxiter = 500))
+coef(nls.gompertz) ## alpha = 9437, beta = 59.24, k = 0.0219
+## Now fit Geompertz model
+growth.gompertz <- growthmodels::gompertz(data$days, alpha = coef(nls.gompertz)[["alpha"]], beta = coef(nls.gompertz)[["beta"]], k = coef(nls.gompertz)[["k"]])
+growth.gompertz
+## Predict
+predict.gompertz <-growthmodels::gompertz(days.predict, alpha = coef(nls.gompertz)[["alpha"]], beta = coef(nls.gompertz)[["beta"]], k = coef(nls.gompertz)[["k"]])
+predict.gompertz
+## the values for 18/4, 18/5, 18/6, and 18/7 predict.gompertz[c(84:87)]
+
+
+
+
+
+
+
+
+
+
+
+
+
