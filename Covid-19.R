@@ -18,7 +18,6 @@ library(usethis)
 library(ISLR)
 library(MASS)
 library(visreg)
-library(rgl)
 library(knitr)
 library(scatterplot3d)
 library(lubridate)
@@ -136,6 +135,41 @@ plot_ly(data = italy_total2,
          legend = list(x = 0.1, y = 0.9),
          yaxis = list(title = "Number of Cases per day on a log scale"),
          xaxis = list(title = "Source: Italy Department of Civil Protection"))
+
+plot_ly(data = italy_total2,
+        x = ~ date,
+        y = ~ diff_cumulative_cases,
+        name = 'Active',
+        fillcolor = '#1f77b4',
+        type = 'scatter',
+        mode = 'none',
+        stackgroup = 'one') %>%
+  add_trace( y = ~ diff_death,
+             name = "Death",
+             fillcolor = '#E41317') %>%
+  add_trace(y = ~ diff_recovered,
+            name = 'Recovered',
+            fillcolor = 'forestgreen') %>%
+  layout(title = "Italy - Distribution of Covid19 Cases",
+         legend = list(x = 0.1, y = 0.9),
+         yaxis = list(title = "Number of Cases"),
+         xaxis = list(title = "Source: Italy Department of Civil Protection"))
+
+italy_province %>%
+  filter(date == max(date), region_name == "Lombardia") %>%
+  plot_ly(labels = ~province_name, values = ~total_cases,
+          textinfo="label+percent",
+          type = 'pie') %>%
+  layout(title = "Lombardia - New Cases Distribution by Province in Lombardia") %>%
+  hide_legend()
+
+italy_province %>%
+  filter(date == max(date), region_name == "Abruzzo") %>%
+  plot_ly(labels = ~province_name, values = ~total_cases,
+          textinfo="label+percent",
+          type = 'pie') %>%
+  layout(title = "New Cases Distribution by Province in Abruzzo") %>%
+  hide_legend()
 
 # same one as before but with ggplot
 ggplot(data = italy_total2, aes(x = date)) + geom_line(aes(y = log(diff_total_test),color = "darkred")) + geom_line(aes(y = log(diff_cumulative_positive_cases), color = "steelblue"))
