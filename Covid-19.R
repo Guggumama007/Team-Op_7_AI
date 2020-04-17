@@ -217,28 +217,61 @@ plot(fit2, pch = 20, cex = 0.7, col = "blue", which = 1)
 
 # time series analysis
 
+library(lubridate)
+x <- italy_total2$date
+date <- ymd(x)
+days <- yday(date) - 54
+
+italy_total2 %>%
+  mutate(days = yday(ymd(italy_total2$date)) - 54)
+
+
+
 library(growthmodels)
 ################################### ### GOMPERTZ
-# alpha = 9526 beta = 9.1618 k = 0.0028
-nls.gompertz <- minpack.lm::nlsLM(data$cases ˜ alpha*exp(-beta*exp(-k*data$days)), data = data, start = list(alpha = alpha, beta = beta, k = k), control = list(maxiter = 500))
-coef(nls.gompertz) ## alpha = 9437, beta = 59.24, k = 0.0219
-## Now fit Geompertz model
-growth.gompertz <- growthmodels::gompertz(data$days, alpha = coef(nls.gompertz)[["alpha"]], beta = coef(nls.gompertz)[["beta"]], k = coef(nls.gompertz)[["k"]])
-growth.gompertz
-## Predict
-predict.gompertz <-growthmodels::gompertz(days.predict, alpha = coef(nls.gompertz)[["alpha"]], beta = coef(nls.gompertz)[["beta"]], k = coef(nls.gompertz)[["k"]])
-predict.gompertz
-## the values for 18/4, 18/5, 18/6, and 18/7 predict.gompertz[c(84:87)]
 
+italy_total3 <- italy_total %>%
+  arrange(date) %>%
+  mutate(diff_hospitalized_with_symptoms = hospitalized_with_symptoms - lag(hospitalized_with_symptoms, default = first(hospitalized_with_symptoms))) %>%
+  mutate(diff_intensive_care = intensive_care - lag(intensive_care, default = first(intensive_care))) %>%
+  mutate(diff_total_hospitalized = total_hospitalized - lag(total_hospitalized, default = first(total_hospitalized))) %>%
+  mutate(diff_home_confinement = home_confinement - lag(home_confinement, default = first(home_confinement))) %>%
+  mutate(diff_cumulative_positive_cases = cumulative_positive_cases - lag(cumulative_positive_cases, default = first(cumulative_positive_cases))) %>%
+  mutate(diff_daily_positive_cases = daily_positive_cases - lag(daily_positive_cases, default = first(daily_positive_cases))) %>%
+  mutate(diff_recovered = recovered - lag(recovered, default = first(recovered))) %>%
+  mutate(diff_death = death - lag(death, default = first(death))) %>%
+  mutate(diff_cumulative_cases = cumulative_cases - lag(cumulative_cases, default = first(cumulative_cases))) %>%
+  mutate(diff_total_test = total_tests - lag(total_tests, default = first(total_tests))) %>%
+  mutate(days = yday(ymd(italy_total3$date)) - 54)
 
+plot(italy_total3$days, italy_total3$cumulative_cases)
+plot(italy_total3$days, italy_total3$death)
+plot(italy_total3$days, italy_total3$diff_cumulative_cases)
+plot(italy_total3$days, italy_total3$diff_death)
 
+# reference: https://www.youtube.com/watch?v=0ifT-7K68sk
+library(easynls)
 
+# First Model
+days_death = as.data.frame(cbind(italy_total3$days, italy_total3$diff_death))
+plot(days_death)
+model1 = nlsfit(days_death, model = 10, start = c(a = 600, b = 2, c = 0.1))
+model1
+nlsplot(days_death, model = 10, start = c(a = 600, b = 2, c = 0.1), 
+        xlab = "Days" , ylab = "Diff_Death" , position = 1)
 
+# Second Model
+days_cumulative_cases = as.data.frame(cbind(italy_total3$days, italy_total3$diff_cumulative_cases))
+plot(days_cumulative_cases)
+model2 = nlsfit(days_cumulative_cases, model = 10, start = c(a = 4000, b = 2, c = 0.2))
+model2
+nlsplot(days_cumulative_cases, model = 10, start = c(a = 4000, b = 2, c = 0.2), 
+        xlab = "Days" , ylab = "Diff_Cumulative_cases" , position = 1)
 
-
-
-
-
-
-
-
+# Third Model can't run because is not suitable for Gompertz
+days_intensive_care = as.data.frame(cbind(italy_total3$days, italy_total3$diff_intensive_care))
+plot(days_intensive_care)
+model3 = nlsfit(days_intensive_care, model = 10, start = c(a = 200, b = 0, c = 0.1))
+model3
+nlsplot(days_intensive_care, model = 10, start = c(a = 200, b = 0, c = 0.1), 
+        xlab = "Days" , ylab = "Diff_Intensive_Care" , position = 1)
