@@ -157,18 +157,10 @@ plot_ly(data = italy_total2,
 
 italy_province %>%
   filter(date == max(date), region_name == "Lombardia") %>%
-  plot_ly(labels = ~province_name, values = ~total_cases,
+  plot_ly(labels = ~province_name, values = ~new_cases,
           textinfo="label+percent",
           type = 'pie') %>%
-  layout(title = "Lombardia - New Cases Distribution by Province in Lombardia") %>%
-  hide_legend()
-
-italy_province %>%
-  filter(date == max(date), region_name == "Abruzzo") %>%
-  plot_ly(labels = ~province_name, values = ~total_cases,
-          textinfo="label+percent",
-          type = 'pie') %>%
-  layout(title = "New Cases Distribution by Province in Abruzzo") %>%
+  layout(title = "Lombardia - Cases Distribution by Province in Lombardia") %>%
   hide_legend()
 
 # same one as before but with ggplot
