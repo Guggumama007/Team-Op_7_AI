@@ -70,13 +70,12 @@ plot_ly(data = italy_total,
 ### Chart C
 
 ```{r}
-italy_province %>%
-  filter(date == max(date), region_name == "Lombardia") %>%
-  plot_ly(labels = ~province_name, values = ~total_cases,
+italy_region %>%
+  filter(date == max(date)) %>%
+  plot_ly(labels = ~region_name, values = ~ cumulative_cases,
           textinfo="label+percent",
           type = 'pie') %>%
-  layout(title = "Lombardia - Cases Distribution by Province") %>%
-  hide_legend()
+  layout(title = "Italy - Cases Distribution by Region") 
 ```
 
 \newpage
