@@ -9,17 +9,29 @@ navbar:
       href: talks.html
     - text: "Programming"
       href: software.html
-    - text: "Teaching"
+    - text: "Covid 19 Plots"
       href: teaching.html
+      menu:
+        - text: "first"
+        - text: "Page A"
+          href: flex_dashboard_Francesco.html
+        - text: "Page B"
+          href: flex_dashboard_francesco2.html
+        - text: "---------"
+        - text: "Heading 2"
+        - text: "Page C"
+          href: page-c.html
+        - text: "Page D"
+          href: page-d.html
   right:
     - icon: fa-envelope fa-lg
       href: contact.html
     - icon: fa-github fa-lg
-      href: http://github.com/zabore
-    - icon: fa-twitter fa-lg
-      href: https://twitter.com/zabormetrics
+      href: http://github.com/Guggumama007
+    - icon: fa-instagram fa-lg
+      href: https://www.instagram.com/thenotoriousmingo/
     - icon: fa-linkedin fa-lg
-      href: https://www.linkedin.com/in/emily-zabor-59b902b7/
+      href: https://www.linkedin.com/in/francesco-minghetti-8178a6160/
 output:
   html_document:
     theme: paper
