@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Single Column (Scrolling)</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<script src="site_libs/plotly-binding-4.9.2.1/plotly.js"></script>
+<script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="site_libs/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.1.0.1/js/crosstalk.min.js"></script>
+<link href="site_libs/plotly-htmlwidgets-css-1.52.2/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="site_libs/plotly-main-1.52.2/plotly-latest.min.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<script src="site_libs/raphael-2.1.4/raphael-2.1.4.min.js"></script>
+<link href="site_libs/justgage-1.2.2.1/justgage.css" rel="stylesheet" />
+<script src="site_libs/justgage-1.2.2.1/justgage.js"></script>
+<script src="site_libs/gauge-binding-0.5.1.1/gauge.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 64px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h2 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h3 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h4 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h5 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h6 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Francesco Minghetti</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="research.html">1</a>
+</li>
+<li>
+  <a href="talks.html">2</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Covid 19 Plots
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">first</li>
+    <li>
+      <a href="flex_dashboard_Francesco.html">Page A</a>
+    </li>
+    <li>
+      <a href="flex_dashboard_francesco2.html">Page B</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Heading 2</li>
+    <li>
+      <a href="page-c.html">Page C</a>
+    </li>
+    <li>
+      <a href="page-d.html">Page D</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="contact.html">
+    <span class="fa fa-envelope fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="http://github.com/Guggumama007">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://www.instagram.com/thenotoriousmingo/">
+    <span class="fa fa-instagram fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://www.linkedin.com/in/francesco-minghetti-8178a6160/">
+    <span class="fa fa-linkedin fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Single Column (Scrolling)</h1>
+
+</div>
+
+
+<div id="column" class="section level2" data-width="650">
+<h2>Column</h2>
+<div id="chart-a" class="section level3">
+<h3>Chart A</h3>
+<pre class="r"><code>plot_ly(data = italy_total2,
+        x = ~ date,
+        y = ~ log(diff_total_test),
+        name = &#39;Daily Tests&#39;,
+        color = &#39;#1f77b4&#39;,
+        type = &#39;scatter&#39;,
+        mode = &#39;‘lines&#39;) %&gt;%
+  add_trace( y = ~ log(diff_death),
+             name = &quot;Daily Deaths&quot;,
+             color = &#39;#E41317&#39;) %&gt;%
+  add_trace(y = ~ log(diff_cumulative_positive_cases),
+            name = &#39;Daily Positive Cases&#39;,
+            color = &#39;forestgreen&#39;) %&gt;%
+  layout(title = &quot;Italy - Distribution of Covid19 Cases daily&quot;,
+         legend = list(x = 0.1, y = 0.9),
+         yaxis = list(title = &quot;Number of Cases per day on a log scale&quot;),
+         xaxis = list(title = &quot;Source: Italy Department of Civil Protection&quot;))</code></pre>
+<div id="htmlwidget-a71eb4cf5c0f2e76b598" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-a71eb4cf5c0f2e76b598">{"x":{"visdat":{"71b663e5cf0":["function () ","plotlyVisDat"]},"cur_data":"71b663e5cf0","attrs":{"71b663e5cf0":{"x":{},"y":{},"mode":"‘lines","name":"Daily Tests","color":"#1f77b4","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"},"71b663e5cf0.1":{"x":{},"y":{},"mode":"‘lines","name":"Daily Deaths","color":"#E41317","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter","inherit":true},"71b663e5cf0.2":{"x":{},"y":{},"mode":"‘lines","name":"Daily Positive Cases","color":"forestgreen","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter","inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Italy - Distribution of Covid19 Cases daily","legend":{"x":0.1,"y":0.9},"yaxis":{"domain":[0,1],"automargin":true,"title":"Number of Cases per day on a log scale"},"xaxis":{"domain":[0,1],"automargin":true,"title":"Source: Italy Department of Civil Protection"},"hovermode":"closest","showlegend":true},"source":"A","config":{"showSendToCloud":false},"data":[{"x":["2020-02-24","2020-02-25","2020-02-26","2020-02-27","2020-02-28","2020-02-29","2020-03-01","2020-03-02","2020-03-03","2020-03-04","2020-03-05","2020-03-06","2020-03-07","2020-03-08","2020-03-09","2020-03-10","2020-03-11","2020-03-12","2020-03-13","2020-03-14","2020-03-15","2020-03-16","2020-03-17","2020-03-18","2020-03-19","2020-03-20","2020-03-21","2020-03-22","2020-03-23","2020-03-24","2020-03-25","2020-03-26","2020-03-27","2020-03-28","2020-03-29","2020-03-30","2020-03-31","2020-04-01","2020-04-02","2020-04-03","2020-04-04","2020-04-05","2020-04-06","2020-04-07","2020-04-08","2020-04-09","2020-04-10","2020-04-11","2020-04-12","2020-04-13","2020-04-14","2020-04-15","2020-04-16","2020-04-17"],"y":[null,8.36613771649628,6.87109129461055,7.7944112057266,8.21093973337902,7.99496952269788,7.81035268372429,7.70436116791031,7.82843635915759,8.28928832300032,7.83399634170946,8.29329935871132,8.64874763115654,8.97144846369383,8.26590733415575,8.84433633274893,9.42488707606487,9.46164368908425,9.34810031168067,9.36580447460025,9.66326142124064,9.47753908548656,9.27753162151651,9.73412170690239,9.75475549873573,10.0903404937493,10.1786921034768,10.1338053075983,9.74484345909653,9.97562215029533,10.2212501357761,10.5082132714952,10.4048384323396,10.4757939021451,10.1065916485126,10.0574525008306,10.2958336481511,10.4474094037913,10.5918482963621,10.5614478730067,10.528757310693,10.4410622095947,10.3179454374793,10.425638798632,10.8528261384565,10.7416870047952,10.8873434705727,10.9439232621511,10.7519276175021,10.5109951420504,10.1953732772485,10.685446571615,11.0186127495785,11.0929303050777],"mode":"‘lines","name":"Daily Tests","type":"scatter","marker":{"color":"rgba(102,194,165,1)","line":{"color":"rgba(102,194,165,1)"}},"textfont":{"color":"rgba(102,194,165,1)"},"error_y":{"color":"rgba(102,194,165,1)"},"error_x":{"color":"rgba(102,194,165,1)"},"line":{"color":"rgba(102,194,165,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["2020-02-24","2020-02-25","2020-02-26","2020-02-27","2020-02-28","2020-02-29","2020-03-01","2020-03-02","2020-03-03","2020-03-04","2020-03-05","2020-03-06","2020-03-07","2020-03-08","2020-03-09","2020-03-10","2020-03-11","2020-03-12","2020-03-13","2020-03-14","2020-03-15","2020-03-16","2020-03-17","2020-03-18","2020-03-19","2020-03-20","2020-03-21","2020-03-22","2020-03-23","2020-03-24","2020-03-25","2020-03-26","2020-03-27","2020-03-28","2020-03-29","2020-03-30","2020-03-31","2020-04-01","2020-04-02","2020-04-03","2020-04-04","2020-04-05","2020-04-06","2020-04-07","2020-04-08","2020-04-09","2020-04-10","2020-04-11","2020-04-12","2020-04-13","2020-04-14","2020-04-15","2020-04-16","2020-04-17"],"y":[null,1.09861228866811,0.693147180559945,1.6094379124341,1.38629436111989,2.07944154167984,1.6094379124341,2.89037175789616,3.29583686600433,3.3322045101752,3.71357206670431,3.89182029811063,3.58351893845611,4.89034912822175,4.57471097850338,5.12396397940326,5.27811465923052,5.24174701505964,5.52146091786225,5.16478597392351,5.90808293816893,5.85507192220243,5.84354441703136,6.16331480403464,6.05678401322862,6.44094654063292,6.67582322163485,6.47850964220857,6.39859493453521,6.61069604471776,6.52649485957079,6.49526555593701,6.87626461189077,6.7900972355139,6.62804137617953,6.69950034016168,6.72982407048948,6.58892647753352,6.63331843328038,6.64118216974059,6.52356230614951,6.26339826259162,6.45519856334012,6.40357419793482,6.29526600143965,6.41345895716736,6.3456363608286,6.4281052726846,6.06610809010375,6.33859407820318,6.40025744530882,6.35957386867238,6.26339826259162,6.35437004079735],"mode":"‘lines","name":"Daily Deaths","type":"scatter","marker":{"color":"rgba(252,141,98,1)","line":{"color":"rgba(252,141,98,1)"}},"textfont":{"color":"rgba(252,141,98,1)"},"error_y":{"color":"rgba(252,141,98,1)"},"error_x":{"color":"rgba(252,141,98,1)"},"line":{"color":"rgba(252,141,98,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["2020-02-24","2020-02-25","2020-02-26","2020-02-27","2020-02-28","2020-02-29","2020-03-01","2020-03-02","2020-03-03","2020-03-04","2020-03-05","2020-03-06","2020-03-07","2020-03-08","2020-03-09","2020-03-10","2020-03-11","2020-03-12","2020-03-13","2020-03-14","2020-03-15","2020-03-16","2020-03-17","2020-03-18","2020-03-19","2020-03-20","2020-03-21","2020-03-22","2020-03-23","2020-03-24","2020-03-25","2020-03-26","2020-03-27","2020-03-28","2020-03-29","2020-03-30","2020-03-31","2020-04-01","2020-04-02","2020-04-03","2020-04-04","2020-04-05","2020-04-06","2020-04-07","2020-04-08","2020-04-09","2020-04-10","2020-04-11","2020-04-12","2020-04-13","2020-04-14","2020-04-15","2020-04-16","2020-04-17"],"y":[null,4.49980967033027,4.30406509320417,5.31320597904179,5.4510384535657,5.42934562895444,6.26909628370626,5.55295958492162,6.0591231955818,6.09356977004514,6.38012253689976,6.42971947803914,7.04315991598834,7.18992217074581,7.37650812632622,6.2709884318583,7.63819824428578,7.71824095195932,7.65728279297819,7.9355873855892,7.9561263512135,7.81197342962202,8.00269416228394,7.8815599170569,8.40737832540903,8.44891435066294,8.48073665440562,8.28324144138542,8.23747928861363,8.19201691453688,8.15794350710504,8.41005331585833,8.38958706681109,8.20275638165564,8.24669594371856,7.40731771046942,7.65302041380419,7.98514393119862,7.81480342948936,7.75747876658418,7.96762673933382,7.99699040583765,7.57095858316901,6.77992190747225,7.08590146436561,7.38709023565676,7.24136628332232,7.59890045687141,7.59287028784482,7.21744343169653,6.51471269087253,7.02731451403978,7.08086789669078,5.87211778947542],"mode":"‘lines","name":"Daily Positive Cases","type":"scatter","marker":{"color":"rgba(141,160,203,1)","line":{"color":"rgba(141,160,203,1)"}},"textfont":{"color":"rgba(141,160,203,1)"},"error_y":{"color":"rgba(141,160,203,1)"},"error_x":{"color":"rgba(141,160,203,1)"},"line":{"color":"rgba(141,160,203,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<div id="column-1" class="section level2" data-width="350">
+<h2>Column</h2>
+<div id="chart-b" class="section level3">
+<h3>Chart B</h3>
+<pre class="r"><code>plot_ly(data = italy_total2,
+        x = ~ date,
+        y = ~ diff_cumulative_cases,
+        name = &#39;Active&#39;,
+        fillcolor = &#39;#1f77b4&#39;,
+        type = &#39;scatter&#39;,
+        mode = &#39;none&#39;,
+        stackgroup = &#39;one&#39;) %&gt;%
+  add_trace( y = ~ diff_death,
+             name = &quot;Death&quot;,
+             fillcolor = &#39;#E41317&#39;) %&gt;%
+  add_trace(y = ~ diff_recovered,
+            name = &#39;Recovered&#39;,
+            fillcolor = &#39;forestgreen&#39;) %&gt;%
+  layout(title = &quot;Italy - Distribution of Covid19 Cases&quot;,
+         legend = list(x = 0.1, y = 0.9),
+         yaxis = list(title = &quot;Number of Cases&quot;),
+         xaxis = list(title = &quot;Source: Italy Department of Civil Protection&quot;))</code></pre>
+<div id="htmlwidget-0bb5592617e0fea7c7c5" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-0bb5592617e0fea7c7c5">{"x":{"visdat":{"71b633361cb1":["function () ","plotlyVisDat"]},"cur_data":"71b633361cb1","attrs":{"71b633361cb1":{"x":{},"y":{},"fillcolor":"#1f77b4","mode":"none","stackgroup":"one","name":"Active","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"},"71b633361cb1.1":{"x":{},"y":{},"fillcolor":"#E41317","mode":"none","stackgroup":"one","name":"Death","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter","inherit":true},"71b633361cb1.2":{"x":{},"y":{},"fillcolor":"forestgreen","mode":"none","stackgroup":"one","name":"Recovered","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter","inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Italy - Distribution of Covid19 Cases","legend":{"x":0.1,"y":0.9},"yaxis":{"domain":[0,1],"automargin":true,"title":"Number of Cases"},"xaxis":{"domain":[0,1],"automargin":true,"title":"Source: Italy Department of Civil Protection"},"hovermode":"closest","showlegend":true},"source":"A","config":{"showSendToCloud":false},"data":[{"x":["2020-02-24","2020-02-25","2020-02-26","2020-02-27","2020-02-28","2020-02-29","2020-03-01","2020-03-02","2020-03-03","2020-03-04","2020-03-05","2020-03-06","2020-03-07","2020-03-08","2020-03-09","2020-03-10","2020-03-11","2020-03-12","2020-03-13","2020-03-14","2020-03-15","2020-03-16","2020-03-17","2020-03-18","2020-03-19","2020-03-20","2020-03-21","2020-03-22","2020-03-23","2020-03-24","2020-03-25","2020-03-26","2020-03-27","2020-03-28","2020-03-29","2020-03-30","2020-03-31","2020-04-01","2020-04-02","2020-04-03","2020-04-04","2020-04-05","2020-04-06","2020-04-07","2020-04-08","2020-04-09","2020-04-10","2020-04-11","2020-04-12","2020-04-13","2020-04-14","2020-04-15","2020-04-16","2020-04-17"],"y":[0,93,78,250,238,240,566,342,466,587,769,778,1247,1492,1797,977,2313,2651,2547,3497,3590,3233,3526,4207,5322,5986,6557,5560,4789,5249,5210,6153,5959,5974,5217,4050,4053,4782,4668,4585,4805,4316,3599,3039,3836,4204,3951,4694,4092,3153,2972,2667,3786,3493],"fillcolor":"#1f77b4","mode":"none","stackgroup":"one","name":"Active","type":"scatter","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"line":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["2020-02-24","2020-02-25","2020-02-26","2020-02-27","2020-02-28","2020-02-29","2020-03-01","2020-03-02","2020-03-03","2020-03-04","2020-03-05","2020-03-06","2020-03-07","2020-03-08","2020-03-09","2020-03-10","2020-03-11","2020-03-12","2020-03-13","2020-03-14","2020-03-15","2020-03-16","2020-03-17","2020-03-18","2020-03-19","2020-03-20","2020-03-21","2020-03-22","2020-03-23","2020-03-24","2020-03-25","2020-03-26","2020-03-27","2020-03-28","2020-03-29","2020-03-30","2020-03-31","2020-04-01","2020-04-02","2020-04-03","2020-04-04","2020-04-05","2020-04-06","2020-04-07","2020-04-08","2020-04-09","2020-04-10","2020-04-11","2020-04-12","2020-04-13","2020-04-14","2020-04-15","2020-04-16","2020-04-17"],"y":[0,3,2,5,4,8,5,18,27,28,41,49,36,133,97,168,196,189,250,175,368,349,345,475,427,627,793,651,601,743,683,662,969,889,756,812,837,727,760,766,681,525,636,604,542,610,570,619,431,566,602,578,525,575],"fillcolor":"#E41317","mode":"none","stackgroup":"one","name":"Death","type":"scatter","marker":{"color":"rgba(255,127,14,1)","line":{"color":"rgba(255,127,14,1)"}},"error_y":{"color":"rgba(255,127,14,1)"},"error_x":{"color":"rgba(255,127,14,1)"},"line":{"color":"rgba(255,127,14,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["2020-02-24","2020-02-25","2020-02-26","2020-02-27","2020-02-28","2020-02-29","2020-03-01","2020-03-02","2020-03-03","2020-03-04","2020-03-05","2020-03-06","2020-03-07","2020-03-08","2020-03-09","2020-03-10","2020-03-11","2020-03-12","2020-03-13","2020-03-14","2020-03-15","2020-03-16","2020-03-17","2020-03-18","2020-03-19","2020-03-20","2020-03-21","2020-03-22","2020-03-23","2020-03-24","2020-03-25","2020-03-26","2020-03-27","2020-03-28","2020-03-29","2020-03-30","2020-03-31","2020-04-01","2020-04-02","2020-04-03","2020-04-04","2020-04-05","2020-04-06","2020-04-07","2020-04-08","2020-04-09","2020-04-10","2020-04-11","2020-04-12","2020-04-13","2020-04-14","2020-04-15","2020-04-16","2020-04-17"],"y":[0,0,2,42,1,4,33,66,11,116,138,109,66,33,102,280,41,213,181,527,369,414,192,1084,415,689,943,952,408,894,1036,999,589,1434,646,1590,1109,1118,1431,1480,1238,819,1022,1555,2099,1979,1985,2079,1677,1224,1695,962,2072,2563],"fillcolor":"forestgreen","mode":"none","stackgroup":"one","name":"Recovered","type":"scatter","marker":{"color":"rgba(44,160,44,1)","line":{"color":"rgba(44,160,44,1)"}},"error_y":{"color":"rgba(44,160,44,1)"},"error_x":{"color":"rgba(44,160,44,1)"},"line":{"color":"rgba(44,160,44,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+<div id="chart-c" class="section level3">
+<h3>Chart C</h3>
+<pre class="r"><code>italy_province %&gt;%
+  filter(date == max(date), region_name == &quot;Lombardia&quot;) %&gt;%
+  plot_ly(labels = ~province_name, values = ~new_cases,
+          textinfo=&quot;label+percent&quot;,
+          type = &#39;pie&#39;) %&gt;%
+  layout(title = &quot;Lombardia - New Cases Distribution by Province in Lombardia&quot;) %&gt;%
+  hide_legend()</code></pre>
+<div id="htmlwidget-50521ad8743377868a6c" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-50521ad8743377868a6c">{"x":{"visdat":{"71b6b239644":["function () ","plotlyVisDat"]},"cur_data":"71b6b239644","attrs":{"71b6b239644":{"labels":{},"values":{},"textinfo":"label+percent","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"pie"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Lombardia - New Cases Distribution by Province in Lombardia","hovermode":"closest","showlegend":false},"source":"A","config":{"showSendToCloud":false},".hideLegend":true,"data":[{"labels":["Bergamo","Brescia","Como","Cremona","Lecco","Lodi","Mantova","Milano","Monza e della Brianza","Pavia","Sondrio","Varese","In fase di definizione/aggiornamento"],"values":[72,212,52,40,19,52,57,325,43,58,2,68,41],"textinfo":"label+percent","type":"pie","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(255,255,255,1)"}},"frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div style="page-break-after: always;"></div>
+</div>
+</div>
+<div id="row" class="section level2">
+<h2>Row</h2>
+<div id="new-deaths" class="section level3">
+<h3>New Deaths</h3>
+<pre class="r"><code>  valueBox(tail(italy_total2$diff_death, n = 1), 
+           icon = &quot;fa-skull&quot;)</code></pre>
+<span class="value-output" data-icon="fa-skull">575</span>
+</div>
+<div id="new-cases" class="section level3">
+<h3>New Cases</h3>
+<pre class="r"><code>  valueBox(tail(italy_total2$diff_cumulative_cases, n = 1), 
+           icon = &quot;fa-virus-slash&quot;)</code></pre>
+<span class="value-output" data-icon="fa-virus-slash">3493</span>
+</div>
+<div id="new-tests" class="section level3">
+<h3>New Tests</h3>
+<pre class="r"><code>  valueBox(tail(italy_total2$diff_total_test, n = 1), 
+           icon = &quot;fa-briefcase-medical&quot;)</code></pre>
+<span class="value-output" data-icon="fa-briefcase-medical">65705</span>
+</div>
+</div>
+<div id="row-1" class="section level2">
+<h2>Row</h2>
+<div id="new-deaths-1" class="section level3">
+<h3>New Deaths</h3>
+<pre class="r"><code>gauge(tail(italy_total2$diff_death, n = 1), min = 0, max = max(italy_total2$diff_death), symbol = &#39; &#39;, gaugeSectors(
+  success = c(0, 300), warning = c(301, 600), danger = c(601, max(italy_total2$diff_death))
+))</code></pre>
+<div id="htmlwidget-832570b6926b34314c4c" style="width:672px;height:480px;" class="gauge html-widget"></div>
+<script type="application/json" data-for="htmlwidget-832570b6926b34314c4c">{"x":{"value":575,"min":0,"max":969,"customSectors":[{"lo":0,"hi":300,"color":"success"},{"lo":301,"hi":600,"color":"warning"},{"lo":601,"hi":969,"color":"danger"}],"symbol":" ","label":null,"humanFriendly":true,"humanFriendlyDecimal":1,"href":null},"evals":[],"jsHooks":[]}</script>
+</div>
+<div id="new-cases-1" class="section level3">
+<h3>New Cases</h3>
+<pre class="r"><code>gauge(tail(italy_total2$diff_cumulative_cases, n = 1), min = 0, max = max(italy_total2$diff_cumulative_cases), symbol = &#39; &#39;, gaugeSectors(
+  success = c(0, 1000), warning = c(1001, 4000), danger = c(4001, max(italy_total2$diff_cumulative_positive_cases))
+))</code></pre>
+<div id="htmlwidget-f0ca947d4f941ee3e2e2" style="width:672px;height:480px;" class="gauge html-widget"></div>
+<script type="application/json" data-for="htmlwidget-f0ca947d4f941ee3e2e2">{"x":{"value":3493,"min":0,"max":6557,"customSectors":[{"lo":0,"hi":1000,"color":"success"},{"lo":1001,"hi":4000,"color":"warning"},{"lo":4001,"hi":4821,"color":"danger"}],"symbol":" ","label":null,"humanFriendly":true,"humanFriendlyDecimal":1,"href":null},"evals":[],"jsHooks":[]}</script>
+</div>
+<div id="new-tests-1" class="section level3">
+<h3>New Tests</h3>
+<pre class="r"><code>gauge(tail(italy_total2$diff_total_test, n = 1), min = 0, max = max(italy_total2$diff_total_test), symbol = &#39; &#39;, gaugeSectors(
+  success = c(40001, max(italy_total2$diff_total_test) ), warning = c(20001, 40000), danger = c(0, 20000))
+)</code></pre>
+<div id="htmlwidget-96d373e926089c8163fd" style="width:672px;height:480px;" class="gauge html-widget"></div>
+<script type="application/json" data-for="htmlwidget-96d373e926089c8163fd">{"x":{"value":65705,"min":0,"max":65705,"customSectors":[{"lo":40001,"hi":65705,"color":"success"},{"lo":20001,"hi":40000,"color":"warning"},{"lo":0,"hi":20000,"color":"danger"}],"symbol":" ","label":null,"humanFriendly":true,"humanFriendlyDecimal":1,"href":null},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
